@@ -1,2 +1,8 @@
 credentials.json
 *.txt
+
+.terraform/*
+terratest*
+terraform.tfstate*
+
+*.DS_Store
