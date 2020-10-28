@@ -1,0 +1,31 @@
+#########################################################################################
+#
+# To start the two services, you must write a docker-compose file that creates:
+#     A service called backend with the following characteristics:
+#         [ ] The name of the container is: flaskbackend
+#         [ ] The image must be the dockerized flask app with the name flaskbackend:v1
+#         [ ] Binds the port 5000:5000
+#         [ ] Depends on the second service (mongo)
+#
+#     A service called mongo with the following characteristics:
+#         [ ] The name of the container is: mongo
+#         [ ] The image must correspond with the version 4.2.0 of MongoDB (mongo:4.2.0)
+#         [ ] Bind the port 1048:27017
+#
+#########################################################################################
+
+version: "3.8"
+services:
+  flaskbackend:
+    container_name: flaskbackend
+    build: .
+    image: flaskbackend:v1
+    ports:
+      - "5000:5000"
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: "mongo:4.2.0"
+    ports:
+      - "1048:27017"
