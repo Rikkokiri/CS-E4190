@@ -48,19 +48,22 @@ def get_professors():
 
     if designation:
         all_prof = Professor.objects(designation=designation)
-    elif group:
-        # all_prof = Professor.objects(designation=designation)
-        all_prof = Professor.objects(researchGroups__name=groupName)
+    if groupName:
+        group = ResearchGroup.objects.get(name=groupName)
+        all_prof = Professor.objects(researchGroups=group)
 
     output = [{'name': str(p['name']), 'email': str(p['email'])} for p in all_prof]
     return jsonify(output), 200
+
+
 
 # Update professor
 @app.route('/listProfessor/<prof_id>', methods=['PUT'])
 def update_professor(prof_id):
     body = request.get_json()
+    body['researchGroups'] = [ObjectId(g) for g in body['researchGroups']]
     Professor.objects.get(id=prof_id).update(**body)
-    return { 'message': 'Professor successfully update', 'id': str(prof_id)}, 200
+    return { 'message': 'Professor successfully updated', 'id': str(prof_id)}, 200
 
 # Delete professor
 @app.route('/listProfessor/<prof_id>', methods=['DELETE'])
@@ -89,6 +92,7 @@ def get_group_by_id(group_id):
 @app.route('/listGroup/<group_id>', methods=['PUT'])
 def update_group(group_id):
     body = request.get_json()
+    body['founder'] = ObjectId(body['founder']) 
     ResearchGroup.objects.get(id=group_id).update(**body)
     output = { 'message': 'Group successfully updated', 'id': str(group_id)}
     status = 200
@@ -121,8 +125,8 @@ def get_student_by_id(student_id):
         if student:
             name = student.name
             studentNumber = student.studentNumber
-            groups = student.researchGroups
-            output = {'name': str(name), 'studentNumber': str(studentNumber), 'researchGroups': groups }
+            group_ids = [str(g.id) for g in student.researchGroups]
+            output = {'name': str(name), 'studentNumber': str(studentNumber), 'researchGroups': group_ids }
             status_code = 200
         else:
             output = {'message': 'Student not found'}
@@ -132,10 +136,13 @@ def get_student_by_id(student_id):
         body = request.get_json()
         keys = body.keys()
         output = {}
+        student = Student.objects.get(id=student_id)
         if body and keys:
-            for key in keys:
-                student.update(key=body[key])
-            output = {'message': 'Student succesfully updated', 'id': str(student.id)}
+            if 'researchGroups' in keys:
+                body['researchGroups'] = [ObjectId(g) for g in body['researchGroups']]
+            student.update(**body)
+            # BlogPost.objects(id=post.id).update_one(push__tags='nosql')
+            output = {'message': 'Student successfully updated', 'id': str(student.id)}
         else:
             # Update Code here
             output = {'message': 'Message body empty'}
@@ -154,7 +161,8 @@ def delete_student(student_id):
 @app.route('/listStudents', methods=['GET'])
 def get_students():
     groupName = request.args.get('groupName')
-    students = Student.objects(researchGroups__name=groupName)
+    group = ResearchGroup.objects.get(name=groupName)
+    students = Student.objects(researchGroups=group)
 
     output = [{'name': str(s['name']), 'studentNumber': str(s['studentNumber'])} for s in students]
     return jsonify(output), 200

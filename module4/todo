@@ -1,28 +1,28 @@
 Docker compose tests (20 points altogether)
 ---------------------
-[X] Required files and folders exist in the container
-[X] Port, work directory and commands are correct
-[X] The Flask container has the correct name
-[X] The database container has the correct name
-[X] The Flask container has the correct port
-[X] The database container has the correct port
+[Y] Required files and folders exist in the container
+[Y] Port, work directory and commands are correct
+[Y] The Flask container has the correct name
+[Y] The database container has the correct name
+[Y] The Flask container has the correct port
+[Y] The database container has the correct port
 
 API TESTS (5 points each)
 ---------------------
-[X] TEST POST PROFESSOR
-[ ] TEST GET PROFESSOR
-[ ] TEST UPDATE PROFESSOR
-[X] TEST DELETE PROFESSOR
-[X] TEST POST GROUP
-[X] TEST GET GROUP
-[ ] TEST UPDATE GROUP
-[ ] TEST DELETE GROUP
-[X] TEST LIST PROFESSORS BY DESIGNATION
+[Y] TEST POST PROFESSOR
+[Y] TEST GET PROFESSOR
+[?] TEST UPDATE PROFESSOR
+[Y] TEST DELETE PROFESSOR
+[Y] TEST POST GROUP
+[Y] TEST GET GROUP
+[Y] TEST UPDATE GROUP
+[Y] TEST DELETE GROUP
+[Y] TEST LIST PROFESSORS BY DESIGNATION
 [ ] TEST ADD PROFESSOR TO GROUP
-[ ] TEST LIST OF PROFESSORS BY GROUP NAME
-[X] TEST POST STUDENT
-[ ] TEST GET STUDENT
+[Y] TEST LIST OF PROFESSORS BY GROUP NAME
+[Y] TEST POST STUDENT
+[Y] TEST GET STUDENT
 [ ] TEST UPDATE STUDENT
-[X] TEST DELETE STUDENT
-[ ] TEST GET LIST OF STUDENTS BY GROUP NAME
+[Y] TEST DELETE STUDENT
+[Y] TEST GET LIST OF STUDENTS BY GROUP NAME
 
