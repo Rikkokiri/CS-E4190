@@ -16,7 +16,10 @@ paths:
       responses:
         '201':
           description: Course successfully created
-          # content
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Course'
         '422':
           description: Unprocessable entity
           content:
@@ -25,14 +28,14 @@ paths:
                 $ref: '#/components/schemas/Error'
       
   /course/{course_id}:
-    parameters:
+    get:
+      summary: Return a user by ID.
+      parameters:
       - in: path
         name: course_id
         schema:
           type: string
         required: true
-    get:
-      summary: Return a user by ID.
       responses:
         '200':
           description: Course
@@ -49,8 +52,14 @@ paths:
       
     put:
       summary: Updates the user matching the id.
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+        required: true
       requestBody:
-        # required: true
+        required: true
         content:
           application/json:
             schema: 
@@ -58,6 +67,10 @@ paths:
       responses:
         '200':
           description: Course successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
         '404':
           description: Not Found
           content:
@@ -73,6 +86,12 @@ paths:
       
     delete:
       summary: Deletes the user matching the id.
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+        required: true
       responses:
         '204':
           description: The course was deleted successfully.
@@ -86,6 +105,15 @@ paths:
   /courses:
     get:
       summary: Returns a list of courses
+      parameters:
+        - in: query
+          name: course_type
+          schema:
+            type: string
+        - in: query
+          name: semester
+          schema:
+            type: string
       responses:
         '200':
           description: A list of courses.
@@ -94,7 +122,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Courses'
 
-  
+
 # Schemas
 components:
   schemas:
