@@ -26,16 +26,23 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/Error'
+        # Definition of all error statuses
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       
   /course/{course_id}:
-    get:
-      summary: Return a user by ID.
-      parameters:
+    parameters:
       - in: path
         name: course_id
         schema:
           type: string
         required: true
+    get:
+      summary: Return a user by ID.
       responses:
         '200':
           description: Course
@@ -49,15 +56,16 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/Error' 
+        # Definition of all error statuses
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       
     put:
       summary: Updates the user matching the id.
-      parameters:
-      - in: path
-        name: course_id
-        schema:
-          type: string
-        required: true
       requestBody:
         required: true
         content:
@@ -83,15 +91,16 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/Error'
-      
+        # Definition of all error statuses
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
     delete:
       summary: Deletes the user matching the id.
-      parameters:
-      - in: path
-        name: course_id
-        schema:
-          type: string
-        required: true
       responses:
         '204':
           description: The course was deleted successfully.
@@ -100,6 +109,13 @@ paths:
           content:
             application/json:
               schema: 
+                $ref: '#/components/schemas/Error'
+        # Definition of all error statuses
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/Error'
       
   /courses:
@@ -121,6 +137,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Courses'
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'
+        # Definition of all error statuses
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 
 # Schemas
