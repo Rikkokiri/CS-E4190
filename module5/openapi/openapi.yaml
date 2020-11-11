@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  title: CSS OpenAPI assignment
+  version: 0.0.1
+
+paths:  
+  /course:
+    post:
+      summary: Adds a new course.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Course'
+      responses:
+        '201':
+          description: Course successfully created
+          # content
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'
+      
+  /course/{course_id}:
+    parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Return a user by ID.
+      responses:
+        '200':
+          description: Course
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error' 
+      
+    put:
+      summary: Updates the user matching the id.
+      requestBody:
+        # required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Course'
+      responses:
+        '200':
+          description: Course successfully updated
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'
+      
+    delete:
+      summary: Deletes the user matching the id.
+      responses:
+        '204':
+          description: The course was deleted successfully.
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Error'
+      
+  /courses:
+    get:
+      summary: Returns a list of courses
+      responses:
+        '200':
+          description: A list of courses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Courses'
+
+  
+# Schemas
+components:
+  schemas:
+    # Schema: Course
+    Course:
+      properties:
+        id:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          readOnly: true
+          maxLength: 10
+        name:
+          type: string
+          readOnly: true
+          maxLength: 20
+        description:
+          type: string
+          maxLength: 30
+        course_type:
+          type: string
+          enum: [compulsory, optional]
+        semester:
+          type: string
+          enum: [autumn, spring]
+        starting_date:
+          type: string
+          format: date-time
+        ending_date:
+          type: string
+          format: date-time
+      required:
+        - code
+        - name
+        - course_type
+        - semester
+        - starting_date
+        - ending_date
+    # Schema: Courses
+    Courses:
+      type: array
+      items:
+        $ref: '#/components/schemas/Course'
+    # Schema: Success
+    Success:
+      properties:
+        message:
+          type: string
+        id:
+          type: string
+    # Schema: Error
+    Error:
+      properties:
+        message:
+          type: string
