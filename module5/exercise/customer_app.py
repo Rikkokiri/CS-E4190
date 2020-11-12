@@ -30,15 +30,30 @@ class CustomerEventConsumer:
         self.channel.exchange_declare(exchange='customer_app_events', exchange_type='topic')
         result = self.channel.queue_declare('', exclusive=True)
         self.temporary_queue_name = result.method.queue
+        self.channel.queue_bind(exchange='customer_app_events', queue=self.temporary_queue_name, routing_key=self.customer_id)
 
     def handle_event(self, ch, method, properties, body):
         # To implement - This is the callback that is passed to "on_message_callback" when a message is received
         xprint("CustomerEventConsumer {}: handle_event() called".format(self.customer_id))
-        
+        # The CustomerEventConsumer must also maintain two lists of parking_events and billing_events containining
+        # the received ParkingEvents and BillingEvents respectively.
+        # These two lists maintain all events received by the customer app, and the messages should be appended to the above lists appropriately. 
+        message = json.loads(body)
+        xprint(type(message))
+        if isinstance(ParkingEvent(**message), ParkingEvent):
+            parking_event = ParkingEvent(**message)
+            self.parking_events.append(parking_event)
+            # xprint('Parking event - ', parking_event )
+            # self.channel.basic_ack(delivery_tag = method.delivery_tag)
+        elif isinstance(BillingEvent(**message), BillingEvent):
+            billing_event = BillingEvent(**message)
+            # xprint('Billing event - ', billing_event)
+            self.billing_events.append(billing_event)
+            # self.channel.basic_ack(delivery_tag = method.delivery_tag)
 
 
     def start_consuming(self):
-        # To implement - Start consuming from Rabbit
+        # Start consuming from Rabbit
         xprint("CustomerEventConsumer {}: start_consuming() called".format(self.customer_id))
         self.channel.basic_consume(queue=self.temporary_queue_name, on_message_callback=self.handle_event)
         self.channel.start_consuming()

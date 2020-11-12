@@ -56,6 +56,9 @@ class ParkingWorker:
                 exchange='',
                 routing_key='parking_events_dead_letter_queue',
                 body = json.dumps(vars(parking_event)))
+            # ParkingWorker must negatively acknowledge such a message
+            self.channel.basic_nack(delivery_tag = method.delivery_tag, requeue=False)
+            # .basicNack(delivery_tag = method.delivery_tag)
         else:
             self.parking_events.append(parking_event)
             self.customer_app_event_producer.publish_parking_event(customer_id, parking_event)
@@ -93,7 +96,7 @@ class ParkingWorker:
     def start_consuming(self):
         # Start consuming from Rabbit
         xprint("ParkingWorker {}: start_consuming() called".format(self.worker_id))
-        self.channel.basic_consume(queue=self.queue, on_message_callback=self.handle_parking_event, auto_ack=True)
+        self.channel.basic_consume(queue=self.queue, on_message_callback=self.handle_parking_event)
         self.channel.start_consuming()
 
 
@@ -163,7 +166,8 @@ class CustomerEventProducer:
         # Use json.dumps(vars(billing_event)) to convert the parking_event object to JSON
         self.channel.basic_publish(
             exchange='billing_events',
-            body = json.dumps(vars(billing_event))
+            body = json.dumps(vars(billing_event)),
+            routing_key=billing_event.customer_id
             )
 
     def publish_parking_event(self, customer_id, parking_event):
@@ -175,7 +179,7 @@ class CustomerEventProducer:
         self.channel.basic_publish(
             exchange='customer_app_events',
             body = json.dumps(vars(parking_event)),
-            routing_key=''
+            routing_key=customer_id
             )
 
     def close(self):
