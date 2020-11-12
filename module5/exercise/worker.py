@@ -54,7 +54,7 @@ class ParkingWorker:
         if customer_id is None:
             self.channel.basic_publish(
                 exchange='',
-                queue='parking_events_dead_letter_queue',
+                routing_key='parking_events_dead_letter_queue',
                 body = json.dumps(vars(parking_event)))
         else:
             self.parking_events.append(parking_event)
@@ -155,8 +155,7 @@ class CustomerEventProducer:
     def initialize_rabbitmq(self):
         # To implement - Initialize the RabbitMq connection, channel, exchange and queue here
         xprint("CustomerEventProducer {}: initialize_rabbitmq() called".format(self.worker_id))
-        # queue = self.channel.queue_declare(queue='customer_events')
-        # self.channel.queue_bind(exchange='customer_app_events', queue='customer_events')
+        self.channel.exchange_declare(exchange='customer_app_events', exchange_type='topic')
 
     def publish_billing_event(self, billing_event):
         xprint("{}: CustomerEventProducer: Publishing billing event {}".format(self.worker_id, vars(billing_event)))
