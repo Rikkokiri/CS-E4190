@@ -76,6 +76,7 @@ class ParkingWorker:
 
                 self.parking_state.pop(parking_event.car_number)
 
+                self.customer_app_event_producer.publish_billing_event(billing_event)
                 self.billing_event_producer.publish(billing_event)
 
 
@@ -165,7 +166,7 @@ class CustomerEventProducer:
         # To implement - publish a message to the Rabbitmq here
         # Use json.dumps(vars(billing_event)) to convert the parking_event object to JSON
         self.channel.basic_publish(
-            exchange='billing_events',
+            exchange='customer_app_events',
             body = json.dumps(vars(billing_event)),
             routing_key=billing_event.customer_id
             )

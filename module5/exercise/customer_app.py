@@ -39,13 +39,13 @@ class CustomerEventConsumer:
         # the received ParkingEvents and BillingEvents respectively.
         # These two lists maintain all events received by the customer app, and the messages should be appended to the above lists appropriately. 
         message = json.loads(body)
-        xprint(type(message))
-        if isinstance(ParkingEvent(**message), ParkingEvent):
+        
+        if 'event_type' in message:
             parking_event = ParkingEvent(**message)
             self.parking_events.append(parking_event)
             # xprint('Parking event - ', parking_event )
             # self.channel.basic_ack(delivery_tag = method.delivery_tag)
-        elif isinstance(BillingEvent(**message), BillingEvent):
+        elif 'parking_cost' in message:
             billing_event = BillingEvent(**message)
             # xprint('Billing event - ', billing_event)
             self.billing_events.append(billing_event)
