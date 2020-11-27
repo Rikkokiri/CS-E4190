@@ -1,7 +1,7 @@
 provider "google" {
   credentials = file("credentials.json")
-  # Update the project ID
-  project = "cssmodule7 " 
+  # DONE: Update the project ID
+  project = "cssmodule7" 
   region  = "europe-west1"
   zone    = "europe-west1-a"
 }
@@ -24,10 +24,18 @@ resource "google_storage_bucket_object" "archive" {
 }
 
 resource "google_cloudfunctions_function" "http_triggered_function" {
+  # DONE: Update this resource
+  name        = "create_file_http"
+  description = "Create file with the name specified in HTTP request"
+  runtime     = "python37"
+
   source_archive_bucket = google_storage_bucket.code_bucket.name
   source_archive_object = google_storage_bucket_object.archive.name
-
-  # TODO: Update this resource
+  trigger_http          = true
+  # 
+  environment_variables = {
+    BUCKET_NAME = google_storage_bucket.output_bucket.name
+  }
 }
 
 # IAM entry for all users to invoke the HTTP-triggered function
@@ -54,6 +62,6 @@ variable "output_bucket_name" {
 
 # Output value for URL of HTTP-trigger cloud function 
 output "create_file_trigger_url" {
-  # TODO: Set the HTTP trigger URL from the cloud function here
-  value = ""
+  # DONE: Set the HTTP trigger URL from the cloud function here
+  value = google_cloudfunctions_function.http_triggered_function.https_trigger_url
 }
