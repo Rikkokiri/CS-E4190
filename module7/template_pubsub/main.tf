@@ -31,10 +31,19 @@ resource "google_storage_bucket_object" "archive" {
 }
 
 resource "google_cloudfunctions_function" "pubsub_triggered_function" {
+  # DONE: Update this resource
+  name        = "detect_language_pubsub"
+  description = "Detect language and publish to a topic accordingly"
+  runtime     = "python37"
+
   source_archive_bucket = google_storage_bucket.code_bucket.name
   source_archive_object = google_storage_bucket_object.archive.name
 
-  # TODO: Update this resource
+  event_trigger {
+    event_type = "google.pubsub.topic.publish"
+    resource = google_pubsub_topic.input_text_queue.name
+    # "projects/{PROJECT}/topics/user-input-text"
+  }
 }
 
 # Bucket name for code archive
