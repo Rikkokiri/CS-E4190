@@ -2,3 +2,4 @@ projectid*
 crendentials*
 *.json
 *tfstate*
+.terraform

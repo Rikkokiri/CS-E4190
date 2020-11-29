@@ -1,7 +1,7 @@
 provider "google" {
   credentials = file("credentials.json")
-  # TODO: Update the project ID
-  project = ""
+  # DONE: Update the project ID
+  project = "cssmodule7"
   region  = "europe-west1"
   zone    = "europe-west1-a"
 }

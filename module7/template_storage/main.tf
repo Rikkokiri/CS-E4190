@@ -1,7 +1,7 @@
 provider "google" {
   credentials = file("credentials.json")
-  # TODO: Update the project ID
-  project = ""
+  # DONE: Update the project ID
+  project = "cssmodule7"
   region  = "europe-west1"
   zone    = "europe-west1-a"
 }
@@ -24,10 +24,21 @@ resource "google_storage_bucket_object" "archive" {
 }
 
 resource "google_cloudfunctions_function" "storage_triggered_function" {
+  # DONE: Update this resource
+  name        = "resize_image_storage"
+  description = "Resize uploaded image to size 300 x 300"
+  runtime     = "python37"
+
   source_archive_bucket = google_storage_bucket.code_bucket.name
   source_archive_object = google_storage_bucket_object.archive.name
+  event_trigger {
+    event_type = "google.storage.object.finalize"
+    resource = google_storage_bucket.storage_triggered_bucket.name
+  }
 
-  # TODO: Update this resource
+  environment_variables = {
+    TRIGGER_BUCKET = google_storage_bucket.storage_triggered_bucket.name
+  }
 }
 
 # Bucket name for input bucket which triggers storage_triggered_function
